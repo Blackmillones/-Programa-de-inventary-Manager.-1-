@@ -1,0 +1,74 @@
+# Programa de inventary Manager. (1)
+
+
+from datetime import datetime
+
+class InventoryManager:
+    def __init__(self):
+        self.inventory = {}
+
+    def agregar_producto(self, name, price, quantity, last_update=None):
+        if last_update is None:
+            last_update = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.inventory[name] = {
+            "precio": price,
+            "cantidad": quantity,
+            "last_update": last_update
+        }
+
+    def actualizar_producto(self, name, price=None, quantity=None):
+        if name in self.inventory:
+            if price is not None:
+                self.inventory[name]["precio"] = price
+            if quantity is not None:
+                self.inventory[name]["cantidad"] = quantity
+            self.inventory[name]["last_update"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            print(f"Producto {name}no existe en el inventario.")
+
+    def obtener_stock(self, name):
+        if name in self.inventory:
+            return self.inventory[name]["cantidad"]
+        else:
+            print(f"Producto {name} no existe en el inventario.")
+            return None
+
+    def productos_bajo_stock(self, min_level):
+        low_stock = {name: details for name, details in self.inventory.items() if details["cantidad"] < min_level}
+        return low_stock
+
+    def mostrar_inventario(self):
+        for name, details in self.inventory.items():
+            print(f"Producto: {name}")
+            print(f"  Precio: {details['precio']}")
+            print(f"  cantidad: {details['cantidad']}")
+            print(f"  Last Update: {details['last_update']}")
+            print()
+
+# Forma de como se podra usar el inventario
+if __name__ == "__main__":
+    manager = InventoryManager()
+
+    # Agregar los productos
+    manager.agregar_producto("computadora", 1550.00, 10)
+    manager.agregar_producto("Mouse", 28.00, 50)
+    manager.agregar_producto("telefono", 77.00, 30)
+
+    # Actualizar los productos
+    manager.actualizar_producto("computadoras", price=1400.00, quantity=15)
+    manager.actualizar_producto("Mouse", quantity=45)
+
+    # Consultar las cantidad de producto que estan en stock
+    print(f"computadora stock: {manager.obtener_stock('computadoras')} unidades")
+    print(f"Mouse stock: {manager.obtener_stock('Mouse')} unidades")
+
+    # Mostrar el productos con el inventario bajo
+    low_stock = manager.productos_bajo_stock(min_level=20)
+    print("Productos con inventario bajo:")
+    for name, details in low_stock.items():
+        print(f"  {name}: {details['cantidad']} unidades")
+
+    # Mostrar el inventario completo
+    print("\nInventario completo:")
+    manager.mostrar_inventario()
+      
